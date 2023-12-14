@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template
+from models import User
+from flask_login import current_user
 
 site = Blueprint('site', __name__, template_folder='site_templates')
 
@@ -8,4 +10,5 @@ def home():
 
 @site.route('/profile')
 def profile():
-    return render_template('profile.html')
+    user = current_user
+    return render_template('profile.html', user = user)

@@ -46,7 +46,7 @@ class User(db.Model, UserMixin):
         return self.pw_hash
 
     def __repr__(self):
-        return f'User {self.email} has been added to the database'
+        return f'User {self.email} has added to the database'
     
 
 class Car(db.Model):
@@ -69,7 +69,7 @@ class Car(db.Model):
 
 
     def __repr__(self):
-        return f'The following car has been added to your inventory: {self.year + self.make + self.model}'
+        return f'A car has been added to your inventory: {self.model}'
 
     def set_id(self):
         return (secrets.token_urlsafe())
