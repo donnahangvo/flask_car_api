@@ -1,6 +1,6 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify
 from helpers import token_required
-from models import db, User, Car, car_schema, cars_schema
+from models import db, Car, car_schema, cars_schema
 
 api = Blueprint('api',__name__, url_prefix='/api')
 
@@ -17,10 +17,10 @@ def create_car(current_user_token):
     color = request.json['color']
     year = request.json['year']
     vin_number = request.json['vin_number']
-    user_token = current_user_token.token
+    user_token = current_user_token
 
 
-    print(f'BIG TESTER: {current_user_token.token}')
+    print(f'BIG TESTER: {current_user_token}')
 
     car = Car(make, model, color, year, vin_number, user_token = user_token )
 
@@ -44,18 +44,31 @@ def get_cars(current_user_token):
 
 # GET method to call a specific contact with an ID number
 
-@api.route('/cars/<id>', methods = ['GET'])
+# @api.route('/cars/<id>', methods = ['GET'])
+# @token_required
+# def get_single_car(current_user_token, id):
+#     a_user = current_user_token.token
+#     single_car = Car.query.filter_by(user_token = a_user).first()
+#     response = car_schema.dump(single_car)
+#     return jsonify(response)
+
+
+@api.route('/cars/<id>', methods=['GET'])
 @token_required
-def get_single_car(current_user_token, id):
-    single_car = Car.query.get(id)
-    response = car_schema.dump(single_car)
-    return jsonify(response)
+def get_single_car(current_user, id):
+    a_user = current_user.token
+    single_car = Car.query.filter_by(user_token=a_user, id=id).first()
+    if single_car:
+        response = car_schema.dump(single_car)
+        return jsonify(response)
+    else:
+        return jsonify({"message": "Car not found"}), 404
 
 
 # UPDATE endpoint
 @api.route('/cars/<id>', methods = ['POST','PUT'])
 @token_required
-def update_contact(current_user_token,id):
+def update_car(current_user_token,id):
     car = Car.query.get(id) 
     car.make = request.json['make']
     car.model = request.json['model']
@@ -72,9 +85,11 @@ def update_contact(current_user_token,id):
 # DELETE car ENDPOINT
 @api.route('/cars/<id>', methods = ['DELETE'])
 @token_required
-def delete_contact(current_user_token, id):
+def delete_car(current_user_token, id):
     car = Car.query.get(id)
-    db.session.delete(car)
+    a_user = current_user_token.token
+    single_car = Car.query.filter_by(user_token = a_user).first()
+    db.session.delete(single_car)
     db.session.commit()
     response = car_schema.dump(car)
     return jsonify(response)
