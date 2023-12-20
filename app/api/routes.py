@@ -8,8 +8,8 @@ api = Blueprint('api',__name__, url_prefix='/api')
 def getdata():
     return {'totally': 'tubular'}
 
+# @api.route('/cars', methods = ['POST'])
 @api.route('/cars', methods = ['POST'])
-# @api.route('/cars')
 @token_required
 def create_car(current_user_token):
     make = request.json['make']
@@ -17,9 +17,9 @@ def create_car(current_user_token):
     color = request.json['color']
     year = request.json['year']
     vin_number = request.json['vin_number']
-    user_token = current_user_token
-
-
+    user_token = current_user_token.token
+    # breakpoint()
+    print(current_user_token.token)
     print(f'BIG TESTER: {current_user_token}')
 
     car = Car(make, model, color, year, vin_number, user_token = user_token )

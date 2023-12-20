@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template
-from models import User
 from flask_login import current_user
 
 site = Blueprint('site', __name__, template_folder='site_templates')

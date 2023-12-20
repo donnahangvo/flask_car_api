@@ -45,8 +45,8 @@ class User(db.Model, UserMixin):
         self.pw_hash = generate_password_hash(password)
         return self.pw_hash
 
-    def __repr__(self):
-        return f'User {self.email} has added to the database'
+    # def __repr__(self):
+    #     return f'User {self.email} has added to the database'
     
 
 class Car(db.Model):
